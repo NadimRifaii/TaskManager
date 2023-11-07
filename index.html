@@ -8,10 +8,44 @@
   <!-- css files -->
   <link rel="stylesheet" href="./styles/utilities.css">
   <link rel="stylesheet" href="./styles/styles.css">
+  <!-- font awesome library -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 </head>
 
 <body>
-
+  <div class="wrapper">
+    <div class="add-update-task">
+      <div class="input-container">
+        <input type="text">
+      </div>
+      <div class="buttons-container">
+        <button class="add-btn btn" id="add">Add Task</button>
+        <button class="update-btn btn" id="update">Update Task</button>
+      </div>
+    </div>
+    <div class="search-box">
+      <input type="search">
+    </div>
+    <div class="info">
+      <div class="task-id">#</div>
+      <div class="task-title">Task Title</div>
+      <div class="task-actions">Actions</div>
+    </div>
+    <div class="tasks-container">
+      <div class="task">
+        <div class="task-id">1</div>
+        <div class="task-title">Go to store</div>
+        <div class="task-actions">
+          <div class="action-holder update">
+            <i class="fa-solid fa-pen"></i>
+          </div>
+          <div class="action-holder delete">
+            <i class="fa-solid fa-trash"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>
