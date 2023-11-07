@@ -4,6 +4,7 @@
   --main-gap: 10px;
   --main-red-color: #f44336;
   --main-padding: 10px;
+  --checked-task-color: #4caf50;
 }
 
 body {
@@ -88,6 +89,10 @@ body {
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid white;
+}
+
+.tasks-container .task.checked {
+  background-color: var(--checked-task-color)
 }
 
 .info {

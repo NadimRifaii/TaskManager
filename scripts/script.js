@@ -11,15 +11,26 @@ if (localStorage.getItem('tasks')) {
 let tasksCounter = tasks.length
 function addTask() {
   const taskTitle = addTaskInput.value;
+  if (!taskTitle || checkIfTaskExists(taskTitle) >= 0) {
+    return
+  }
   const task = {
     id: tasksCounter,
-    title: taskTitle
+    title: taskTitle,
+    status: false
   }
   tasks.push(task)
   tasksCounter++;
   localStorage.setItem('tasks', JSON.stringify(tasks))
   addTaskInput.value = null
   displayTask(task)
+}
+function checkIfTaskExists(title) {
+  for (let i = 0; i < tasks.length; i++) {
+    if (tasks[i].title.toLowerCase() == title.toLowerCase())
+      return i
+  }
+  return -1
 }
 function searchTask() {
   const searchedTasks = []
@@ -40,9 +51,25 @@ function searchTask() {
 function deleteTask(taskId) {
   for (let i = 0; i < tasks.length; i++) {
     if (tasks[i].id == taskId) {
-      tasks.splice(i, 1);
+      const removedTask = tasks.splice(i, 1);
       localStorage.setItem('tasks', JSON.stringify(tasks));
       tasksContainer.children[i].remove()
+      return removedTask
+    }
+  }
+}
+function toggleTaskStatus(taskId) {
+  for (let i = 0; i < tasks.length; i++) {
+    if (tasks[i].id == taskId) {
+      const task = tasksContainer.children[i]
+      task.classList.toggle('checked')
+      if (task.classList.contains('checked')) {
+        tasks[i].status = true
+      } else {
+        tasks[i].status = false
+      }
+      localStorage.setItem('tasks', JSON.stringify(tasks))
+      return
     }
   }
 }
@@ -85,6 +112,9 @@ function doTask(theTask, option = true) {
       } else {
         addClassesToElement(actionHolder, 'check')
         addClassesToElement(icon, ...'fa-solid fa-check check-icon'.split(' '))
+        icon.addEventListener('click', () => {
+          toggleTaskStatus(theTask.id)
+        })
       }
       taskActions.append(actionHolder)
     }
@@ -94,6 +124,12 @@ function doTask(theTask, option = true) {
 }
 function displayTask(theTask, option) {
   const task = doTask(theTask, option)
+  const result = checkIfTaskExists(theTask.title)
+  console.log(result)
+  if (result >= 0) {
+    if (tasks[result].status == true)
+      task.classList.add('checked')
+  }
   tasksContainer.append(task)
 }
 function displayAllTasks(tasks) {
