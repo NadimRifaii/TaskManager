@@ -1,7 +1,8 @@
 const addTaskInput = document.querySelector('.add-task-input')
 const searchTaskInput = document.querySelector('.search-task-input')
 const tasksContainer = document.querySelector('.tasks-container');
-const addTaskBtn = document.querySelector('button.add-btn')
+const addTaskBtn = document.querySelector('button.add-btn');
+const deletTaskBtn = document.querySelector('button.delete-btn')
 let tasks = []
 if (localStorage.getItem('tasks')) {
   tasks = JSON.parse(localStorage.getItem('tasks'))
@@ -36,6 +37,15 @@ function searchTask() {
   else
     displayAllTasks(tasks)
 }
+function deleteTask(taskId) {
+  for (let i = 0; i < tasks.length; i++) {
+    if (tasks[i].id == taskId) {
+      tasks.splice(i, 1);
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      tasksContainer.children[i].remove()
+    }
+  }
+}
 function doElement(value = null, element, ...classesToAdd) {
   const htmlElement = document.createElement(element)
   htmlElement.innerText = value
@@ -69,6 +79,9 @@ function doTask(theTask, option = true) {
         actionHolder.classList.add('delete')
         addClassesToElement(actionHolder, 'delete')
         addClassesToElement(icon, ...'fa-solid fa-trash delete-icon'.split(' '))
+        icon.addEventListener('click', () => {
+          deleteTask(theTask.id)
+        })
       } else {
         addClassesToElement(actionHolder, 'check')
         addClassesToElement(icon, ...'fa-solid fa-check check-icon'.split(' '))
