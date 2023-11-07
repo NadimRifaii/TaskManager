@@ -1,0 +1,127 @@
+:root {
+  --border-radius: 4px;
+  --space-between-containers: 10px;
+  --main-gap: 10px;
+  --main-red-color: #f44336;
+  --main-padding: 10px;
+}
+
+body {
+  background-color: #000014;
+  color: white;
+  font-family: sans-serif;
+  font-size: 18px;
+}
+
+.wrapper {
+  max-width: 800px;
+  padding: var(--main-padding);
+  margin: 40px auto;
+}
+
+.wrapper .add-update-task {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--main-gap);
+  margin-bottom: var(--space-between-containers);
+}
+
+.wrapper .add-update-task .input-container {
+  flex: 1;
+}
+
+.wrapper input {
+  display: block;
+  width: 100%;
+  padding: var(--main-padding);
+  border-radius: var(--border-radius);
+  outline: none;
+  border: none;
+  font-size: 18px;
+}
+
+.wrapper input::placeholder {
+  transition: .3s;
+}
+
+.wrapper input:focus::placeholder {
+  opacity: 0;
+}
+
+.wrapper .add-update-task .btn {
+  display: block;
+  padding: var(--main-padding);
+  border-radius: var(--border-radius);
+  min-width: 120px;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.wrapper .add-update-task .btn.add-btn {
+  background-color: var(--main-red-color);
+}
+
+.wrapper .add-update-task .btn.update-btn {
+  background-color: #03a9f4;
+}
+
+.wrapper .add-update-task .btn.hide {
+  display: none;
+}
+
+
+.wrapper .search-box {
+  width: 50%;
+  margin-left: auto;
+  margin-bottom: var(--space-between-containers)
+}
+
+
+.tasks-container .task,
+.info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid white;
+}
+
+.info {
+  background-color: var(--main-red-color);
+  color: white;
+  font-weight: bold;
+}
+
+.info>div,
+.tasks-container .task>div {
+  padding: var(--main-padding);
+}
+
+.info>div:not(:nth-of-type(2)),
+.tasks-container .task>div:not(:nth-of-type(2)) {
+  min-width: 92px;
+  text-align: center;
+}
+
+.info>div:nth-of-type(2),
+.tasks-container .task>div:nth-of-type(2) {
+  flex: 1;
+  border-right: 1px solid white;
+  border-left: 1px solid white;
+  text-align: center;
+}
+
+.tasks-container .task .task-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: var(--main-gap);
+}
+
+.tasks-container .task .task-actions .action-holder i {
+  cursor: pointer;
+}
