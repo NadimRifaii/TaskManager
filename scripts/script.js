@@ -35,9 +35,14 @@ function checkIfTaskExists(title) {
 }
 function filterTasks(option) {
   const searchedTasks = []
+  if (tasks.length == 0)
+    return
   for (let task of tasks) {
     if (option == 'search') {
-      if (task.title.toLowerCase().includes(searchTaskInput.value.toLowerCase()))
+      if (selectFilterBy.value != 'all') {
+        if (selectFilterBy.value == task.status && task.title.toLowerCase().includes(searchTaskInput.value.toLowerCase()))
+          searchedTasks.push(task)
+      } else if (task.title.toLowerCase().includes(searchTaskInput.value.toLowerCase()))
         searchedTasks.push(task)
     } else {
       if (task.status == option)
