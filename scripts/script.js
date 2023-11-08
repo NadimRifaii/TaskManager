@@ -2,7 +2,7 @@ const addTaskInput = document.querySelector('.add-task-input')
 const searchTaskInput = document.querySelector('.search-task-input')
 const tasksContainer = document.querySelector('.tasks-container');
 const addTaskBtn = document.querySelector('button.add-btn');
-const deletTaskBtn = document.querySelector('button.delete-btn')
+const updateTaskBtn = document.querySelector('button.update-btn')
 let tasks = []
 if (localStorage.getItem('tasks')) {
   tasks = JSON.parse(localStorage.getItem('tasks'))
@@ -52,8 +52,13 @@ function deleteTask(taskId) {
   for (let i = 0; i < tasks.length; i++) {
     if (tasks[i].id == taskId) {
       const removedTask = tasks.splice(i, 1);
+      const currentTask = tasksContainer.children[i]
       localStorage.setItem('tasks', JSON.stringify(tasks));
-      tasksContainer.children[i].remove()
+      if (currentTask.classList.contains('current')) {
+        toggleOnUpdate(currentTask)
+        addTaskInput.value = null
+      }
+      currentTask.remove()
       return removedTask
     }
   }
@@ -72,6 +77,34 @@ function toggleTaskStatus(taskId) {
       return
     }
   }
+}
+function toggleOnUpdate(task) {
+  updateTaskBtn.classList.toggle('hide')
+  addTaskBtn.classList.toggle('hide')
+  document.querySelector('.info').classList.toggle('updating')
+  task.classList.toggle('current')
+}
+function showUpdateBtnAngToggle(taskId) {
+  if (document.querySelector('.info').classList.contains('updating')) {
+    return
+  }
+  for (let i = 0; i < tasks.length; i++) {
+    if (tasks[i].id == taskId) {
+      const task = tasksContainer.children[i]
+      addTaskInput.value = task.querySelector('.task-title').innerText
+      toggleOnUpdate(task)
+      return
+    }
+  }
+}
+function updateTask() {
+  const currentTask = document.querySelector('.task.current .task-title')
+  const index = checkIfTaskExists(currentTask.innerText)
+  currentTask.innerText = addTaskInput.value
+  tasks[index].title = currentTask.innerText;
+  addTaskInput.value = null
+  toggleOnUpdate(currentTask.parentElement)
+  localStorage.setItem('tasks', JSON.stringify(tasks))
 }
 function doElement(value = null, element, ...classesToAdd) {
   const htmlElement = document.createElement(element)
@@ -102,6 +135,9 @@ function doTask(theTask, option = true) {
         actionHolder.classList.add('update')
         addClassesToElement(actionHolder, 'update')
         addClassesToElement(icon, 'fa-solid', 'fa-pen', 'update-icon')
+        icon.addEventListener('click', () => {
+          showUpdateBtnAngToggle(theTask.id)
+        })
       } else if (i == 1) {
         actionHolder.classList.add('delete')
         addClassesToElement(actionHolder, 'delete')
@@ -125,7 +161,6 @@ function doTask(theTask, option = true) {
 function displayTask(theTask, option) {
   const task = doTask(theTask, option)
   const result = checkIfTaskExists(theTask.title)
-  console.log(result)
   if (result >= 0) {
     if (tasks[result].status == true)
       task.classList.add('checked')
@@ -137,4 +172,5 @@ function displayAllTasks(tasks) {
     displayTask(task)
 }
 addTaskBtn.addEventListener('click', addTask)
+updateTaskBtn.addEventListener('click', updateTask)
 searchTaskInput.addEventListener('input', searchTask)

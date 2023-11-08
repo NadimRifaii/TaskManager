@@ -5,6 +5,7 @@
   --main-red-color: #f44336;
   --main-padding: 10px;
   --checked-task-color: #4caf50;
+  --main-blue-color: #03a9f4;
 }
 
 body {
@@ -68,7 +69,7 @@ body {
 }
 
 .wrapper .add-update-task .btn.update-btn {
-  background-color: #03a9f4;
+  background-color: var(--main-blue-color);
 }
 
 .wrapper .add-update-task .btn.hide {
@@ -99,6 +100,11 @@ body {
   background-color: var(--main-red-color);
   color: white;
   font-weight: bold;
+}
+
+.info.updating,
+.task.current {
+  background-color: var(--main-blue-color)
 }
 
 .info>div,
