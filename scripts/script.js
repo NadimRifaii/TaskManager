@@ -142,9 +142,18 @@ function appendElementsToParent(parent, ...children) {
   for (let child of children)
     parent.append(child)
 }
+function addDragEvents(task) {
+  task.addEventListener('dragstart', function () {
+    task.classList.add('dragging')
+  })
+  task.addEventListener('dragend', function () {
+    task.classList.remove('dragging')
+  })
+}
 function doTask(theTask, option = true) {
   const task = doElement(null, 'div', 'task');
   task.setAttribute('draggable', 'true')
+  addDragEvents(task)
   const taskId = doElement(theTask.id, 'div', 'task-id');
   const taskTitle = doElement(theTask.title, 'div', 'task-title')
   const taskActions = doElement(null, 'div', 'task-actions')
@@ -204,4 +213,13 @@ searchTaskInput.addEventListener('input', function () {
 })
 selectFilterBy.addEventListener('change', function (e) {
   filterTasks(e.target.value)
+})
+
+tasksContainer.addEventListener('dragover', function (event) {
+  const dragedItem = this.querySelector('.dragging')
+  const siblings = [...this.querySelectorAll('.task:not(.dragging)')]
+  const nextSibling = siblings.find(function (sibling) {
+    return event.clientY <= sibling.offsetTop + sibling.offsetHeight / 2;
+  })
+  tasksContainer.insertBefore(dragedItem, nextSibling)
 })
