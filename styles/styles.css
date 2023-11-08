@@ -55,7 +55,7 @@ body {
   display: block;
   padding: var(--main-padding);
   border-radius: var(--border-radius);
-  min-width: 120px;
+  min-width: 126px;
   text-align: center;
   cursor: pointer;
   border: none;
@@ -78,11 +78,28 @@ body {
 
 
 .wrapper .search-box {
-  width: 50%;
   margin-left: auto;
-  margin-bottom: var(--space-between-containers)
+  margin-bottom: var(--space-between-containers);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--main-gap)
 }
 
+.wrapper .search-box :where(.filter-tasks, .search-task-input) {
+  width: 49%;
+}
+
+.wrapper .search-box .filter-tasks {
+  display: flex;
+  align-items: center;
+  gap: var(--main-gap);
+}
+
+.wrapper .search-box .filter-tasks select {
+  padding: var(--main-padding);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+}
 
 .tasks-container .task,
 .info {
@@ -100,6 +117,10 @@ body {
   background-color: var(--main-red-color);
   color: white;
   font-weight: bold;
+}
+
+.task {
+  cursor: grap;
 }
 
 .info.updating,
@@ -124,6 +145,11 @@ body {
   border-right: 1px solid white;
   border-left: 1px solid white;
   text-align: center;
+}
+
+.tasks-container .task .task-title {
+  max-height: 41px;
+  overflow-y: auto;
 }
 
 .tasks-container .task .task-actions {

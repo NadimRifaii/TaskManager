@@ -2,7 +2,8 @@ const addTaskInput = document.querySelector('.add-task-input')
 const searchTaskInput = document.querySelector('.search-task-input')
 const tasksContainer = document.querySelector('.tasks-container');
 const addTaskBtn = document.querySelector('button.add-btn');
-const updateTaskBtn = document.querySelector('button.update-btn')
+const updateTaskBtn = document.querySelector('button.update-btn');
+const selectFilterBy = document.querySelector('select')
 let tasks = []
 if (localStorage.getItem('tasks')) {
   tasks = JSON.parse(localStorage.getItem('tasks'))
@@ -17,7 +18,7 @@ function addTask() {
   const task = {
     id: tasksCounter,
     title: taskTitle,
-    status: false
+    status: 'unchecked'
   }
   tasks.push(task)
   tasksCounter++;
@@ -32,27 +33,40 @@ function checkIfTaskExists(title) {
   }
   return -1
 }
-function searchTask() {
+function filterTasks(option) {
   const searchedTasks = []
   for (let task of tasks) {
-    if (task.title.toLowerCase().includes(searchTaskInput.value.toLowerCase())) {
-      searchedTasks.push(task)
+    if (option == 'search') {
+      if (task.title.toLowerCase().includes(searchTaskInput.value.toLowerCase()))
+        searchedTasks.push(task)
+    } else {
+      if (task.status == option)
+        searchedTasks.push(task)
     }
   }
   tasksContainer.innerHTML = ''
-  if (searchedTasks.length > 0)
-    displayAllTasks(searchedTasks)
-  else if (searchTaskInput.value) {
-    displayTask({ id: -1, title: 'No such task' }, false)
-  }
-  else
+  if (searchedTasks.length == 0 && option == 'all') {
     displayAllTasks(tasks)
+  } else if (searchedTasks.length == 0 && (option == 'checked' || option == 'unchecked')) {
+    displayTask({ id: -1, title: `No ${option} tasks` }, false)
+  } else if (searchedTasks.length == 0 && option == 'search') {
+    displayTask({ id: -1, title: `No such task` }, false)
+  } else {
+    displayAllTasks(searchedTasks, false)
+  }
+}
+function findTaskInTasksContainer(title) {
+  for (let i = 0; i < tasksContainer.children.length; i++) {
+    if (tasksContainer.children[i].querySelector('.task-title').innerText == title)
+      return tasksContainer.children[i]
+  }
+  return -1
 }
 function deleteTask(taskId) {
   for (let i = 0; i < tasks.length; i++) {
     if (tasks[i].id == taskId) {
+      const currentTask = findTaskInTasksContainer(tasks[i].title)
       const removedTask = tasks.splice(i, 1);
-      const currentTask = tasksContainer.children[i]
       localStorage.setItem('tasks', JSON.stringify(tasks));
       if (currentTask.classList.contains('current')) {
         toggleOnUpdate(currentTask)
@@ -66,12 +80,12 @@ function deleteTask(taskId) {
 function toggleTaskStatus(taskId) {
   for (let i = 0; i < tasks.length; i++) {
     if (tasks[i].id == taskId) {
-      const task = tasksContainer.children[i]
+      const task = findTaskInTasksContainer(tasks[i].title)
       task.classList.toggle('checked')
       if (task.classList.contains('checked')) {
-        tasks[i].status = true
+        tasks[i].status = 'checked'
       } else {
-        tasks[i].status = false
+        tasks[i].status = 'unchecked'
       }
       localStorage.setItem('tasks', JSON.stringify(tasks))
       return
@@ -90,7 +104,7 @@ function showUpdateBtnAngToggle(taskId) {
   }
   for (let i = 0; i < tasks.length; i++) {
     if (tasks[i].id == taskId) {
-      const task = tasksContainer.children[i]
+      const task = findTaskInTasksContainer(tasks[i].title)
       addTaskInput.value = task.querySelector('.task-title').innerText
       toggleOnUpdate(task)
       return
@@ -98,6 +112,9 @@ function showUpdateBtnAngToggle(taskId) {
   }
 }
 function updateTask() {
+  if (!addTaskInput.value) {
+    return
+  }
   const currentTask = document.querySelector('.task.current .task-title')
   const index = checkIfTaskExists(currentTask.innerText)
   currentTask.innerText = addTaskInput.value
@@ -122,6 +139,7 @@ function appendElementsToParent(parent, ...children) {
 }
 function doTask(theTask, option = true) {
   const task = doElement(null, 'div', 'task');
+  task.setAttribute('draggable', 'true')
   const taskId = doElement(theTask.id, 'div', 'task-id');
   const taskTitle = doElement(theTask.title, 'div', 'task-title')
   const taskActions = doElement(null, 'div', 'task-actions')
@@ -135,20 +153,20 @@ function doTask(theTask, option = true) {
         actionHolder.classList.add('update')
         addClassesToElement(actionHolder, 'update')
         addClassesToElement(icon, 'fa-solid', 'fa-pen', 'update-icon')
-        icon.addEventListener('click', () => {
+        icon.addEventListener('click', function () {
           showUpdateBtnAngToggle(theTask.id)
         })
       } else if (i == 1) {
         actionHolder.classList.add('delete')
         addClassesToElement(actionHolder, 'delete')
         addClassesToElement(icon, ...'fa-solid fa-trash delete-icon'.split(' '))
-        icon.addEventListener('click', () => {
+        icon.addEventListener('click', function () {
           deleteTask(theTask.id)
         })
       } else {
         addClassesToElement(actionHolder, 'check')
         addClassesToElement(icon, ...'fa-solid fa-check check-icon'.split(' '))
-        icon.addEventListener('click', () => {
+        icon.addEventListener('click', function () {
           toggleTaskStatus(theTask.id)
         })
       }
@@ -158,13 +176,16 @@ function doTask(theTask, option = true) {
   appendElementsToParent(task, ...elementsToAppend)
   return task
 }
-function displayTask(theTask, option) {
-  const task = doTask(theTask, option)
-  const result = checkIfTaskExists(theTask.title)
+function checkTaskStatus(task, title) {
+  const result = checkIfTaskExists(title)
   if (result >= 0) {
-    if (tasks[result].status == true)
+    if (tasks[result].status == 'checked')
       task.classList.add('checked')
   }
+}
+function displayTask(theTask, option) {
+  const task = doTask(theTask, option)
+  checkTaskStatus(task, theTask.title)
   tasksContainer.append(task)
 }
 function displayAllTasks(tasks) {
@@ -173,4 +194,9 @@ function displayAllTasks(tasks) {
 }
 addTaskBtn.addEventListener('click', addTask)
 updateTaskBtn.addEventListener('click', updateTask)
-searchTaskInput.addEventListener('input', searchTask)
+searchTaskInput.addEventListener('input', function () {
+  filterTasks('search')
+})
+selectFilterBy.addEventListener('change', function (e) {
+  filterTasks(e.target.value)
+})
