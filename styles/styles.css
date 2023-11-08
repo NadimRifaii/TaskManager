@@ -124,7 +124,7 @@ body {
 }
 
 .info.updating,
-.task.current {
+.wrapper .tasks-container .task.current {
   background-color: var(--main-blue-color)
 }
 
