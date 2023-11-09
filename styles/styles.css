@@ -18,7 +18,7 @@ body {
 .wrapper {
   max-width: 800px;
   padding: var(--main-padding);
-  margin: 40px auto;
+  margin: auto;
 }
 
 .wrapper .add-update-task {
@@ -117,6 +117,8 @@ body {
   background-color: var(--main-red-color);
   color: white;
   font-weight: bold;
+  position: sticky;
+  top: 0;
 }
 
 .task {
@@ -125,7 +127,13 @@ body {
 
 .info.updating,
 .wrapper .tasks-container .task.current {
-  background-color: var(--main-blue-color)
+  background-color: var(--main-blue-color);
+  max-height: 100%;
+}
+
+.wrapper .tasks-holder {
+  max-height: 541px;
+  overflow-y: auto
 }
 
 .info>div,

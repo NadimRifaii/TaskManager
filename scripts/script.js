@@ -33,6 +33,14 @@ function checkIfTaskExists(title) {
   }
   return -1
 }
+function removeErrorMessage(task) {
+  const previousElement = task.previousElementSibling;
+  if (previousElement) {
+    if (previousElement.querySelector('.task-id').innerText == '-1') {
+      previousElement.remove()
+    }
+  }
+}
 function filterTasks(option) {
   const searchedTasks = []
   if (tasks.length == 0)
@@ -201,6 +209,7 @@ function displayTask(theTask, option) {
   const task = doTask(theTask, option)
   checkTaskStatus(task, theTask.title)
   tasksContainer.append(task)
+  removeErrorMessage(task)
 }
 function displayAllTasks(tasks) {
   for (let task of tasks)
